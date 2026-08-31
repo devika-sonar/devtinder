@@ -11,6 +11,19 @@ app.post("/user",(req,res)=>{
     res.send("data saved success!");
 }) 
 
+
+app.use("/users",
+    (req,res,next)=>{
+    res.send({firstname:"devika",lastname:"sonar"}) 
+    next(); 
+    },
+        (req,res)=>{
+            console.log("handling route 2");
+            res.send("2nd response");
+        }
+    );
+
+
 app.delete("/user",(req,res)=>{
    //delete user from DB
     res.send("user deleted");
