@@ -1,38 +1,33 @@
 const express= require("express");
 
 const app= express();
+const connectDB=require("./config/database");
+const User=require("./models/user")
 
-app.get("/user",(req,res)=>{
-    res.send({firstname:"devika",lastname:"sonar"});
-}) 
-
-app.post("/user",(req,res)=>{
-  //save data to DB
-    res.send("data saved success!");
-}) 
-
-
-app.use("/users",
-    (req,res,next)=>{
-    res.send({firstname:"devika",lastname:"sonar"}) 
-    next(); 
-    },
-        (req,res)=>{
-            console.log("handling route 2");
-            res.send("2nd response");
-        }
-    );
-
-
-app.delete("/user",(req,res)=>{
-   //delete user from DB
-    res.send("user deleted");
-})
-
-app.use("/",(req,res)=>{
-    res.send("homepage");
-})
-
-app.listen(3000,()=>{
+app.post("/signup",async (req,res)=>{
+    const user=new User({
+        firstName: "khushal",
+        lastName: "rahangdale",
+        email: "khushal@rahangdale.com",
+        password: "khushal123",
+       
+    });
+ try{
+     await user.save();
+   res.send("user added successfully"); 
+ }catch(err){
+    res.status(400).send("user not added" + err.message);
+ }
+  
+});
+connectDB()
+.then(()=>{
+    console.log("DB connected");
+    app.listen(7777,()=>{
     console.log("server is running");
+});
+
+})
+.catch((err)=>{
+    console.log("DB connection failed");
 });
