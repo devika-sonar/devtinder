@@ -51,6 +51,44 @@ app.get("/feed",async (req,res)=>{
     res.status(400).send("something went wrong" + err.message);
 }
 })
+
+
+//delete an user from the database
+app.delete("/user", async (req,res)=>{
+    let userid=req.body.userId;
+    console.log(userid);
+    try
+   { 
+    const deluser= await User.findByIdAndDelete(userid);
+    if(!deluser){
+        res.send("user not found");
+    }
+    else{
+        res.send("user deleted successfully");
+    }
+}catch(err){
+    res.status(400).send("user not deleted" + err.message);
+}
+})
+
+//update data of the user in the database
+
+app.patch("/user",async (req,res)=>{
+    console.log("path hit");
+    let userId=req.body.userId;
+    const data=req.body;
+    console.log(data);
+   try
+   { 
+    await User.findByIdAndUpdate(userId,data,{new:true});
+    res.send("user updated successfully");
+}
+    catch(err){
+        res.status(400).send("user not updated" + err.message);
+    }
+})
+
+
 connectDB()
 .then(()=>{
     console.log("DB connected");
