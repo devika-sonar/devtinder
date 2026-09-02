@@ -6,6 +6,9 @@ const User=require("./models/user")
 
 app.use(express.json());
 
+
+
+//signup API
 app.post("/signup",async (req,res)=>{
 
     console.log(req);
@@ -18,6 +21,36 @@ app.post("/signup",async (req,res)=>{
  }
   
 });
+
+// -get one user from the database
+app.get("/finduser", async (req,res)=>{
+    const useremail=req.body.email;
+  try {
+     const users=await User.findOne({email: useremail});
+
+     if(users.length ===0){
+        res.status(404).send("user not found");
+     }
+else{
+    res.send(users);
+}
+    }
+    catch(err){
+        res.status(400).send("user not found" + err.message);
+    }
+});
+
+
+//FEED - API  to get all users from database
+
+app.get("/feed",async (req,res)=>{
+    try{
+        const allusers= await User.find({});
+    res.send(allusers);
+}catch(err){
+    res.status(400).send("something went wrong" + err.message);
+}
+})
 connectDB()
 .then(()=>{
     console.log("DB connected");
