@@ -4,14 +4,12 @@ const app= express();
 const connectDB=require("./config/database");
 const User=require("./models/user")
 
+app.use(express.json());
+
 app.post("/signup",async (req,res)=>{
-    const user=new User({
-        firstName: "khushal",
-        lastName: "rahangdale",
-        email: "khushal@rahangdale.com",
-        password: "khushal123",
-       
-    });
+
+    console.log(req);
+    const user=new User(req.body);
  try{
      await user.save();
    res.send("user added successfully"); 
@@ -29,5 +27,5 @@ connectDB()
 
 })
 .catch((err)=>{
-    console.log("DB connection failed");
+    console.log("DB connection failed" + err.message);
 });
