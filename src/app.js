@@ -73,14 +73,27 @@ app.delete("/user", async (req,res)=>{
 
 //update data of the user in the database
 
-app.patch("/user",async (req,res)=>{
+app.patch("/user/:userId",async (req,res)=>{
     console.log("path hit");
-    let userId=req.body.userId;
+    let userId=req.params?.userId;
     const data=req.body;
     console.log(data);
-   try
-   { 
-    await User.findByIdAndUpdate(userId,data,{new:true},{runValidators:true});
+
+   try {const ALLOWED_UPDATES=["firstName","photourl","about","skills"]; 
+
+    const isupdateallowed=Object.keys(data).every((k) => ALLOWED_UPDATES.includes(k)
+);
+//this simply means looping through each obj i.e. key of he array and if the update allowed loop will continue else the loop will break and function exits and update is not allowed.
+
+//also write userid wala route in the notes and params.userid is used to get the userId from the url and req.body.userId is used to get the userId from the body of the request.
+    if(!isupdateallowed){
+        throw new error("update not allowed");
+    }
+  if(data?.skills.length>10){
+    throw new error("skills cannot be more than 10");
+  }
+    
+    const user=await User.findByIdAndUpdate(userId,data,{new:true},{runValidators:true});
     res.send("user updated successfully");
 }
     catch(err){
