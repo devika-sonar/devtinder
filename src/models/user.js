@@ -1,4 +1,5 @@
 const mongoose=require("mongoose");
+const validator=require("validator");
 
 const userschema=new mongoose.Schema({
     firstName:{
@@ -17,10 +18,20 @@ const userschema=new mongoose.Schema({
         unique:true,
         lowercase:true,
         trim:true,
+        validate(value){
+            if(!validator.isEmail(value)){
+                throw new Error("invalid email");
+            }
+        }
     },
     password:{
         type:String,
-        required:true
+        required:true,
+         validate(value){
+            if(!validator.isStrongPassword(value)){
+                throw new Error("enter a strong password");
+            }
+        }
     },
     age:{
         type:Number,
@@ -40,6 +51,11 @@ const userschema=new mongoose.Schema({
     photourl:{
         type:String,
         default:"https://www.magnific.com/free-vector/user-blue-gradient_145856969.htm#fromView=keyword&page=1&position=3&uuid=748a09c9-d7ee-49fc-b353-6e0a76e18dec&track=ais_hybrid&query=Dummy",
+         validate(value){
+            if(!validator.isURL(value)){
+                throw new Error("invalid URL");
+            }
+        },
     },
     about:{
         type:String,
